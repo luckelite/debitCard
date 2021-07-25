@@ -1,65 +1,69 @@
 <template>
   <div class="main">
     <h1>Gerador de cartões Bradesco</h1>
-    <form @submit.prevent="show">
-      <span v-if="$v.number.$error" >Mínimo 16 dígitos</span>
+    <form >
+      <span v-if="$v.number.$error">Mínimo 16 dígitos</span>
       <input
         type="text"
         v-mask="'#### #### #### ####'"
         name="number"
         maxlength="19"
-        v-model.trim="$v.number.$model"
+        v-model="number"
+        @change="$v.number.$touch()"
         placeholder="NÚMERO DO CARTÃO"
         title="máx. 16 dígitos no formato: 0000 0000 0000 0000"
       />
-       <span v-if="$v.valid.$error" >Mínimo 4 dígitos</span>
+      <span v-if="$v.valid.$error">Mínimo 4 dígitos</span>
       <input
         type="text"
         v-mask="'##/##'"
-        v-model.trim="$v.valid.$model"
+        v-model="valid"
+        @change="$v.valid.$touch()"
         placeholder="VALIDADE"
         title="Formato: 00/00"
         maxlength="5"
       />
       <input
         type="text"
-        v-model.trim="$v.name.$model"
+        v-model="name"
+        @change="$v.name.$touch()"
         placeholder="NOME DO TITULAR"
         title="máx. 25 caractéres"
         maxlength="25"
       />
-       <span v-if="$v.agency.$error" >Mínimo 5 dígitos</span>
+      <span v-if="$v.agency.$error">Mínimo 5 dígitos</span>
       <input
         type="text"
         v-mask="'####-#'"
-        v-model.trim="$v.agency.$model"
+        v-model="agency"
+        @change="$v.agency.$touch()"
         placeholder="AGÊNCIA"
         title="máx. 5 dígitos no formato: 0000-0"
         maxlength="6"
       />
-       <span v-if="$v.account.$error" >Mínimo 8 dígitos. Ex: 0001234-5</span>
+      <span v-if="$v.account.$error">Mínimo 8 dígitos. Ex: 0001234-5</span>
       <input
         type="text"
         v-mask="'#######-#'"
-        v-model.trim="$v.account.$model"
+        v-model="account"
+        @change="$v.account.$touch()"
         placeholder="CONTA"
         title="máx. 8 dígitos no formato: 0000000-0"
         maxlength="9"
       />
-       <span v-if="$v.cod.$error" >Mínimo 3 dígitos</span>
+      <span v-if="$v.cod.$error">Mínimo 3 dígitos</span>
       <input
         type="text"
         v-mask="'###'"
-        v-model.trim="$v.cod.$model"
+        v-model="cod"
+        @change="$v.cod.$touch()"
         placeholder="CÓDIGO DE SEGURANÇA"
         title="máx. 3 dígitos"
         maxlength="3"
       />
-      <button
-        type="submit"
-        title="VER CARTÃO"
-        id="btn"
-      >VER CARTÃO</button>
+      <button title="VER CARTÃO" type="submit" @click.prevent="show()" id="btn">
+        VER CARTÃO
+      </button>
       <input
         type="button"
         value="LIMPAR"
@@ -79,7 +83,7 @@
 <script>
 import Front from "./Front.vue";
 import Back from "./Back.vue";
-import { minLength } from 'vuelidate/lib/validators'
+import { required, minLength } from "vuelidate/lib/validators";
 export default {
   data() {
     return {
@@ -98,7 +102,11 @@ export default {
   },
   methods: {
     show() {
-      this.visible = true;
+      if (!this.$v.$invalid) {
+        this.visible = true;
+      } else {
+        this.$v.$touch();
+      }
     },
     hidden() {
       this.visible = false;
@@ -113,13 +121,13 @@ export default {
     },
   },
   validations: {
-    number: { minLength: minLength(19) },
-    valid: { minLenght: minLength(5) },
-    name: { minLenght: minLength(25) },
-    agency: { minLenght: minLength(6) },
-    account: { minLenght: minLength(9) },
-    cod: { minLenght: minLength(3) },
-  }
+    number: { required, minLength: minLength(19) },
+    valid: { required, minLenght: minLength(5) },
+    name: { required, minLenght: minLength(25) },
+    agency: { required, minLenght: minLength(6) },
+    account: { required, minLenght: minLength(9) },
+    cod: { required, minLenght: minLength(3) },
+  },
 };
 </script>
 
@@ -140,7 +148,7 @@ export default {
   display: flex;
   flex-direction: column;
 }
-.main form span{
+.main form span {
   font-size: 10px;
   color: #fff;
 }
