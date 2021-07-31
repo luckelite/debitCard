@@ -102,7 +102,7 @@ export default {
   },
   methods: {
     show() {
-      if (this.$v.$invalid) {
+      if (!this.$v.$invalid) {
         this.visible = true;
       } else {
         this.$v.$touch();
