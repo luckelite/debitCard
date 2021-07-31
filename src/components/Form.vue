@@ -61,7 +61,7 @@
         title="máx. 3 dígitos"
         maxlength="3"
       />
-      <button title="VER CARTÃO" type="submit" @click.prevent="show()" id="btn">
+      <button title="VER CARTÃO" type="submit" @click.prevent="show" id="btn">
         VER CARTÃO
       </button>
       <input
@@ -102,7 +102,7 @@ export default {
   },
   methods: {
     show() {
-      if (!this.$v.$invalid) {
+      if (this.$v.$invalid) {
         this.visible = true;
       } else {
         this.$v.$touch();
